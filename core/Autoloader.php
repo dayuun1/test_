@@ -1,9 +1,9 @@
 <?php
 class Autoloader {
     private static $directories = [
-        'core/',
-        'app/models/',
-        'app/controllers/'
+        __DIR__ . '/../core/',
+        __DIR__ . '/../app/models/',
+        __DIR__ . '/../app/controllers/'
     ];
 
     public static function register() {

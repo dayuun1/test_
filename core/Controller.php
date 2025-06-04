@@ -7,7 +7,10 @@ abstract class Controller {
     }
 
     protected function render($template, $data = []) {
-        return $this->view->render($template, $data);
+        extract($data);
+        ob_start();
+        require __DIR__ . '/../app/views/' . $template . '.php'; // ← додай app/
+        return ob_get_clean();
     }
 
     protected function redirect($url) {
