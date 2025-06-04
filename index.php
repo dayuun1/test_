@@ -1,11 +1,14 @@
 <?php
 
-require_once 'config/database.php';
-require_once 'core/Router.php';
-require_once 'core/Controller.php';
-require_once 'core/Model.php';
-require_once 'models/User.php';
-require_once 'models/Manga.php';
+session_start();
+
+require_once 'core/Autoloader.php';
+Autoloader::register();
+
+$router = new Router();
+
+// Підключаємо маршрути
+require_once 'config/routes.php';
 
 $router = new Router();
 
@@ -19,4 +22,10 @@ $router->addRoute('GET', '/admin/manga', 'AdminController', 'manageManga');
 $router->addRoute('GET', '/admin/manga/create', 'AdminController', 'createManga');
 $router->addRoute('POST', '/admin/manga/create', 'AdminController', 'createManga');
 
-$router->dispatch();
+try {
+    $router->dispatch();
+} catch (Exception $e) {
+    http_response_code(500);
+    echo "Internal Server Error: " . $e->getMessage();
+}
+?>
