@@ -1,5 +1,6 @@
 <?php
-$router->get('/', 'MangaController@index');
+
+$router->get('/', 'HomeController@index');
 
 // Манга
 $router->get('/manga', 'MangaController@index');
