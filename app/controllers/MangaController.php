@@ -3,6 +3,7 @@ class MangaController extends Controller {
     private $mangaModel;
     private $chapterModel;
 
+
     public function __construct() {
         parent::__construct();
         $this->mangaModel = new Manga();
@@ -22,8 +23,8 @@ class MangaController extends Controller {
     }
 
     // Перегляд конкретної манги
-    public function show($slug) {
-        $manga = $this->mangaModel->findBySlug($slug);
+    public function show($id) {
+        $manga = $this->mangaModel->find($id);
 
         if (!$manga) {
             http_response_code(404);
@@ -67,6 +68,7 @@ class MangaController extends Controller {
             // Додавання жанрів
             if (isset($_POST['genres'])) {
                 $this->addGenresToManga($mangaId, $_POST['genres']);
+
             }
 
             $this->redirect('/manga/' . $data['slug']);

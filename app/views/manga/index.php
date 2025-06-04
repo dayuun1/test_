@@ -28,7 +28,7 @@
                             <p class="card-text flex-grow-1"><?= htmlspecialchars(substr($manga['description'], 0, 100)) ?>...</p>
                             <div class="mt-auto">
                                 <small class="text-muted">Переглядів: <?= $manga['views'] ?></small>
-                                <a href="/manga/<?= $manga['slug'] ?>" class="btn btn-primary btn-sm float-end">Читати</a>
+                                <a href="/manga/<?= $manga['id'] ?>" class="btn btn-primary btn-sm float-end">Читати</a>
                             </div>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                             <p class="card-text flex-grow-1"><?= htmlspecialchars(substr($manga['description'], 0, 100)) ?>...</p>
                             <div class="mt-auto">
                                 <small class="text-muted"><?= date('d.m.Y', strtotime($manga['created_at'])) ?></small>
-                                <a href="/manga/<?= $manga['slug'] ?>" class="btn btn-primary btn-sm float-end">Читати</a>
+                                <a href="/manga/<?= $manga['id'] ?>" class="btn btn-primary btn-sm float-end">Читати</a>
                             </div>
                         </div>
                     </div>

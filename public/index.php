@@ -13,7 +13,7 @@ $router->get('/', 'MangaController@index');
 $router->get('/manga', 'MangaController@index');
 $router->get('/manga/create', 'MangaController@create');
 $router->post('/manga/create', 'MangaController@create');
-$router->get('/manga/{slug}', 'MangaController@show');
+$router->get('/manga/{id}', 'MangaController@show');
 
 // Розділи
 $router->get('/manga/{slug}/chapter/{number}', 'ChapterController@show');
@@ -24,10 +24,13 @@ $router->post('/manga/{id}/upload', 'ChapterController@upload');
 // Жанри
 $router->get('/genres', 'GenreController@index');
 $router->get('/genres/{slug}', 'GenreController@show');
-
+$router->get('/genres/create', 'GenreController@create');
+$router->post('/genres/create', 'GenreController@create');
 // Персонажі
 $router->get('/characters', 'CharacterController@index');
 $router->get('/characters/{id}', 'CharacterController@show');
+$router->get('/characters/create', 'CharacterController@create');
+$router->post('/characters/create', 'CharacterController@create');
 
 // Новини
 $router->get('/news', 'NewsController@index');
