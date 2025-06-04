@@ -20,17 +20,46 @@
 
             <p><strong>Автор:</strong> <?= htmlspecialchars($manga['author']) ?></p>
             <p><strong>Художник:</strong> <?= htmlspecialchars($manga['artist']) ?></p>
-
+            <?php if (!empty($genres)): ?>
+                <p><strong>Жанри:</strong>
+                    <?php foreach ($genres as $genre): ?>
+                        <a href="/genres/<?= $genre['id'] ?>" class="badge bg-info text-decoration-none"><?= htmlspecialchars($genre['name']) ?></a>
+                    <?php endforeach; ?>
+                </p>
+            <?php endif; ?>
             <div class="mb-4">
                 <h5>Опис</h5>
                 <p><?= nl2br(htmlspecialchars($manga['description'])) ?></p>
             </div>
 
-            <?php if (Auth::check() && (Auth::hasRole('translator') || Auth::hasRole('admin'))): ?>
-                <a href="/manga/<?= $manga['id'] ?>/upload" class="btn btn-success">Завантажити розділ</a>
-            <?php endif; ?>
         </div>
+        <?php if (!empty($characters)): ?>
+            <div class="mt-5">
+                <h3>Персонажі</h3>
+                <div class="row">
+                    <?php foreach ($characters as $character): ?>
+                        <div class="col-md-2 mb-2">
+                            <div class="card h-100">
+                                <?php if (!empty($character['image'])): ?>
+                                    <img src="/public/uploads/characters/<?= htmlspecialchars($character['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($character['name']) ?>">
+                                <?php endif; ?>
+                                <div class="card-body">
+                                    <h5 class="card-title"><?= htmlspecialchars($character['name']) ?></h5>
+                                    <?php if (!empty($character['description'])): ?>
+                                        <p class="card-text"><?= htmlspecialchars(mb_strimwidth($character['description'], 0, 100, '...')) ?></p>
+                                    <?php endif; ?>
+                                    <a href="/characters/<?= $character['id'] ?>" class="btn btn-sm btn-outline-primary">Детальніше</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
+<?php if (Auth::check() && (Auth::hasRole('translator') || Auth::hasRole('admin'))): ?>
+    <a href="/manga/<?= $manga['id'] ?>/upload" class="btn btn-success">Завантажити розділ</a>
+<?php endif; ?>
 
     <div class="mt-5">
         <h3>Розділи</h3>
@@ -39,7 +68,7 @@
         <?php else: ?>
             <div class="list-group">
                 <?php foreach ($chapters as $chapter): ?>
-                    <a href="/manga/<?= $manga['slug'] ?>/chapter/<?= $chapter['chapter_number'] ?>"
+                    <a href="/manga/<?= $manga['id'] ?>/chapter/<?= $chapter['chapter_number'] ?>"
                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="mb-1">Розділ <?= $chapter['chapter_number'] ?></h6>
@@ -52,8 +81,20 @@
                     </a>
                 <?php endforeach; ?>
             </div>
+
+            <?php if ($totalPages > 1): ?>
+                <nav class="mt-3">
+                    <ul class="pagination">
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+                    </ul>
+                </nav>
+            <?php endif; ?>
+
         <?php endif; ?>
     </div>
-
 <?php $content = ob_get_clean(); ?>
 <?php include __DIR__ . '/../layouts/main.php'; ?>

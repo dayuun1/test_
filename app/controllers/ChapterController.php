@@ -10,8 +10,8 @@ class ChapterController extends Controller {
     }
 
     // Перегляд розділу
-    public function show($mangaSlug, $chapterNumber) {
-        $manga = $this->mangaModel->findBySlug($mangaSlug);
+    public function show($mangaId, $chapterNumber) {
+        $manga = $this->mangaModel->find($mangaId);
         if (!$manga) {
             http_response_code(404);
             echo $this->render('errors/404');
@@ -25,7 +25,6 @@ class ChapterController extends Controller {
             return;
         }
 
-        // Перевіряємо авторизацію для приватного контенту
         if (!Auth::check()) {
             $this->redirect('/login');
         }
@@ -60,23 +59,26 @@ class ChapterController extends Controller {
 
             $this->chapterModel->create($data);
             $manga = $this->mangaModel->find($mangaId);
-            $this->redirect('/manga/' . $manga['slug']);
+            $this->redirect('/manga/' . $manga['id']);
         }
 
         $manga = $this->mangaModel->find($mangaId);
         echo $this->render('chapters/upload', ['manga' => $manga]);
     }
 
-    // Віддача PDF файлу з контролем доступу
-    public function servePdf($mangaSlug, $chapterNumber) {
+    public function servePdf($mangaId, $chapterNumber) {
         if (!Auth::check()) {
             http_response_code(401);
             die('Unauthorized');
         }
 
-        $manga = $this->mangaModel->findBySlug($mangaSlug);
-        $chapter = $this->chapterModel->findByMangaAndNumber($manga['id'], $chapterNumber);
+        $manga = $this->mangaModel->find($mangaId);
+        if (!$manga) {
+            http_response_code(404);
+            die('Manga not found');
+        }
 
+        $chapter = $this->chapterModel->findByMangaAndNumber($manga['id'], $chapterNumber);
         if (!$chapter) {
             http_response_code(404);
             die('Chapter not found');
@@ -94,9 +96,7 @@ class ChapterController extends Controller {
 
         readfile($filepath);
     }
-
     private function getPdfPageCount($filepath) {
-        // Простий спосіб підрахунку сторінок PDF
         $content = file_get_contents($filepath);
         $pageCount = preg_match_all('/\/Page\W/', $content);
         return $pageCount ?: 1;

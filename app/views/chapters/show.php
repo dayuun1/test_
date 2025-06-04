@@ -3,7 +3,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/manga">Манга</a></li>
-        <li class="breadcrumb-item"><a href="/manga/<?= $manga['slug'] ?>"><?= htmlspecialchars($manga['title']) ?></a></li>
+        <li class="breadcrumb-item"><a href="/manga/<?= $manga['id'] ?>"><?= htmlspecialchars($manga['title']) ?></a></li>
         <li class="breadcrumb-item active">Розділ <?= $chapter['chapter_number'] ?></li>
     </ol>
 </nav>
@@ -20,8 +20,8 @@
 <div class="row mb-4">
     <div class="col">
         <div class="btn-group" role="group">
-            <a href="/manga/<?= $manga['slug'] ?>" class="btn btn-outline-primary">Назад до манги</a>
-            <a href="/manga/<?= $manga['slug'] ?>/chapter/<?= $chapter['chapter_number'] ?>/pdf"
+            <a href="/manga/<?= $manga['id'] ?>" class="btn btn-outline-primary">Назад до манги</a>
+            <a href="/manga/<?= $manga['id'] ?>/chapter/<?= $chapter['chapter_number'] ?>/pdf"
                class="btn btn-primary" target="_blank">Читати PDF</a>
         </div>
     </div>
@@ -29,10 +29,10 @@
 
 <div class="card">
     <div class="card-body">
-        <embed src="/manga/<?= $manga['slug'] ?>/chapter/<?= $chapter['chapter_number'] ?>/pdf"
+        <embed src="/manga/<?= $manga['id'] ?>/chapter/<?= $chapter['chapter_number'] ?>/pdf"
                type="application/pdf"
                width="100%"
-               height="800px">
+               height="1600px">
     </div>
 </div>
 

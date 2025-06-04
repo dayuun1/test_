@@ -18,7 +18,7 @@
                             <h5 class="card-title"><?= htmlspecialchars($item['title']) ?></h5>
                             <p class="card-text flex-grow-1"><?= htmlspecialchars(substr($item['description'], 0, 100)) ?>...</p>
                             <div class="mt-auto">
-                                <a href="/manga/<?= $item['slug'] ?>" class="btn btn-primary btn-sm float-end">Читати</a>
+                                <a href="/manga/<?= $item['id'] ?>" class="btn btn-primary btn-sm float-end">Читати</a>
                             </div>
                         </div>
                     </div>

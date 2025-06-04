@@ -10,7 +10,7 @@ class ChapterUpload {
         }
 
         if ($file['size'] > $this->maxFileSize) {
-            throw new Exception('Файл занадто великий (максимум 50MB)');
+            throw new Exception('Файл занадто великий (максимум 100MB)');
         }
 
         // Створення директорії

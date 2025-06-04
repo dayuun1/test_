@@ -18,8 +18,8 @@ class GenreController extends Controller {
         ]);
     }
 
-    public function show($slug) {
-        $genre = $this->genreModel->findBySlug($slug);
+    public function show($id) {
+        $genre = $this->genreModel->findById($id);
 
         if (!$genre) {
             http_response_code(404);
@@ -54,6 +54,16 @@ class GenreController extends Controller {
         echo $this->render('genres/create', [
             'title' => 'Додати жанр'
         ]);
+    }
+
+    public function getMangaByGenre($genreId) {
+        $stmt = $this->db->prepare("
+        SELECT m.* FROM manga m
+        JOIN manga_genres mg ON m.id = mg.manga_id
+        WHERE mg.genre_id = ?
+    ");
+        $stmt->execute([$genreId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private function generateSlug($name) {

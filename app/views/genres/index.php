@@ -18,7 +18,7 @@
                     <div class="card-body">
                         <h5 class="card-title"><?= htmlspecialchars($genre['name']) ?></h5>
                         <p class="card-text"><?= htmlspecialchars(substr($genre['description'], 0, 100)) ?>...</p>
-                        <a href="/genres/<?= $genre['slug'] ?>" class="btn btn-primary btn-sm">Переглянути</a>
+                        <a href="/genres/<?= $genre['id'] ?>" class="btn btn-primary btn-sm">Переглянути</a>
                     </div>
                 </div>
             </div>

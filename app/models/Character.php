@@ -36,4 +36,10 @@ class Character extends Model {
         $stmt->execute([$searchTerm, $searchTerm, $limit]);
         return $stmt->fetchAll();
     }
+
+    public function getByMangaId($mangaId) {
+        $stmt = $this->db->prepare("SELECT * FROM characters WHERE manga_id = ?");
+        $stmt->execute([$mangaId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

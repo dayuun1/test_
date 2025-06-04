@@ -32,6 +32,23 @@ class Manga extends Model {
         $stmt->execute([$limit]);
         return $stmt->fetchAll();
     }
+    public function getGenres($mangaId) {
+        $stmt = $this->db->prepare("
+        SELECT g.* FROM genres g
+        JOIN manga_genres mg ON g.id = mg.genre_id
+        WHERE mg.manga_id = ?
+    ");
+        $stmt->execute([$mangaId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function addGenres($mangaId, $genreIds) {
+        foreach ($genreIds as $genreId) {
+            $stmt = $this->db->prepare("INSERT INTO manga_genres (manga_id, genre_id) VALUES (?, ?)");
+            $stmt->execute([$mangaId, $genreId]);
+        }
+    }
+
 
     public function incrementViews($id) {
         $stmt = $this->db->prepare("UPDATE {$this->table} SET views = views + 1 WHERE id = ?");

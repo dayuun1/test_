@@ -3,7 +3,7 @@
 <h1><?= htmlspecialchars($character['name']) ?></h1>
 
 <?php if (!empty($character['image'])): ?>
-    <img src="/uploads/characters/<?= htmlspecialchars($character['image']) ?>" class="img-fluid mb-3" alt="<?= htmlspecialchars($character['name']) ?>">
+    <img src="/public/uploads/characters/<?= htmlspecialchars($character['image']) ?>" class="img-fluid mb-3" alt="<?= htmlspecialchars($character['name']) ?>">
 <?php endif; ?>
 
 <?php if (!empty($manga)): ?>

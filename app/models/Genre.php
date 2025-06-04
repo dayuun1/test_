@@ -2,9 +2,9 @@
 class Genre extends Model {
     protected $table = 'genres';
 
-    public function findBySlug($slug) {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE slug = ?");
-        $stmt->execute([$slug]);
+    public function findById($id) {
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
+        $stmt->execute([$id]);
         return $stmt->fetch();
     }
 

@@ -22,9 +22,9 @@ class MangaController extends Controller {
         ]);
     }
 
-    // Перегляд конкретної манги
     public function show($id) {
         $manga = $this->mangaModel->find($id);
+        $characters = (new Character())->getByMangaId($manga['id']);
 
         if (!$manga) {
             http_response_code(404);
@@ -32,17 +32,28 @@ class MangaController extends Controller {
             return;
         }
 
-        $chapters = $this->chapterModel->findAll(['manga_id' => $manga['id']]);
+        $perPage = 4;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $offset = ($page - 1) * $perPage;
+
+        $chapters = $this->chapterModel->getByMangaPaginated($manga['id'], $perPage, $offset);
+        $totalChapters = $this->chapterModel->countByManga($manga['id']);
+        $totalPages = ceil($totalChapters / $perPage);
+
         $this->mangaModel->incrementViews($manga['id']);
+        $genres = $this->mangaModel->getGenres($manga['id']);
 
         echo $this->render('manga/show', [
             'manga' => $manga,
             'chapters' => $chapters,
-            'title' => $manga['title']
+            'genres' => $genres,
+            'characters' => $characters,
+            'title' => $manga['title'],
+            'currentPage' => $page,
+            'totalPages' => $totalPages
         ]);
     }
 
-    // Створення нової манги (тільки для перекладачів та адмінів)
     public function create() {
         $this->requireAuth();
         $this->requireRole('translator');
@@ -58,7 +69,6 @@ class MangaController extends Controller {
                 'created_by' => Auth::user()['id']
             ];
 
-            // Обробка завантаження обкладинки
             if (isset($_FILES['cover']) && $_FILES['cover']['error'] === 0) {
                 $data['cover_image'] = $this->uploadCover($_FILES['cover']);
             }
@@ -67,11 +77,10 @@ class MangaController extends Controller {
 
             // Додавання жанрів
             if (isset($_POST['genres'])) {
-                $this->addGenresToManga($mangaId, $_POST['genres']);
-
+                $this->mangaModel->addGenres($mangaId, $_POST['genres']);
             }
 
-            $this->redirect('/manga/' . $data['slug']);
+            $this->redirect('/manga/' . $mangaId);
         }
 
         $genres = (new Genre())->findAll();
@@ -99,10 +108,7 @@ class MangaController extends Controller {
         throw new Exception('Помилка завантаження обкладинки');
     }
 
-    private function addGenresToManga($mangaId, $genreIds) {
-        foreach ($genreIds as $genreId) {
-            $stmt = $this->db->prepare("INSERT INTO manga_genres (manga_id, genre_id) VALUES (?, ?)");
-            $stmt->execute([$mangaId, $genreId]);
-        }
-    }
+
+
+
 }

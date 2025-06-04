@@ -12,7 +12,7 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     <?php if (!empty($character['image'])): ?>
-                        <img src="/uploads/characters/<?= htmlspecialchars($character['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($character['name']) ?>">
+                        <img src="/public/uploads/characters/<?= htmlspecialchars($character['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($character['name']) ?>">
                     <?php endif; ?>
                     <div class="card-body">
                         <h5 class="card-title"><?= htmlspecialchars($character['name']) ?></h5>

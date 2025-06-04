@@ -16,14 +16,14 @@ $router->post('/manga/create', 'MangaController@create');
 $router->get('/manga/{id}', 'MangaController@show');
 
 // Розділи
-$router->get('/manga/{slug}/chapter/{number}', 'ChapterController@show');
-$router->get('/manga/{slug}/chapter/{number}/pdf', 'ChapterController@servePdf');
+$router->get('/manga/{mangaId}/chapter/{number}', 'ChapterController@show');
+$router->get('/manga/{mangaId}/chapter/{number}/pdf', 'ChapterController@servePdf');
 $router->get('/manga/{id}/upload', 'ChapterController@upload');
 $router->post('/manga/{id}/upload', 'ChapterController@upload');
 
 // Жанри
 $router->get('/genres', 'GenreController@index');
-$router->get('/genres/{slug}', 'GenreController@show');
+$router->get('/genres/{id}', 'GenreController@show');
 $router->get('/genres/create', 'GenreController@create');
 $router->post('/genres/create', 'GenreController@create');
 // Персонажі
@@ -55,6 +55,8 @@ $router->get('/admin', 'AdminController@dashboard');
 $router->get('/admin/users', 'AdminController@users');
 $router->post('/admin/users/{id}/role', 'AdminController@updateUserRole');
 $router->post('/admin/cache/clear', 'AdminController@clearCache');
+
+
 
 try {
     $router->dispatch();
