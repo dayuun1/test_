@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = 'localhost';
-    private $db_name = 'manga_site';
+    private $db_name = 'manga';
     private $username = 'root';
     private $password = '';
     private $connection;

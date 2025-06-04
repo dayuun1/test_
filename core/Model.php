@@ -3,44 +3,68 @@ abstract class Model {
     protected $db;
     protected $table;
 
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct() {
+        $this->db = Database::getInstance()->getConnection();
     }
 
-    public function findAll() {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} ORDER BY id DESC");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function findById($id) {
+    public function find($id) {
         $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
         $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch();
+    }
+
+    public function findAll($conditions = [], $limit = null, $offset = 0) {
+        $sql = "SELECT * FROM {$this->table}";
+        $params = [];
+
+        if (!empty($conditions)) {
+            $whereClause = [];
+            foreach ($conditions as $field => $value) {
+                $whereClause[] = "$field = ?";
+                $params[] = $value;
+            }
+            $sql .= " WHERE " . implode(' AND ', $whereClause);
+        }
+
+        if ($limit) {
+            $sql .= " LIMIT $limit OFFSET $offset";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
     }
 
     public function create($data) {
-        $fields = array_keys($data);
-        $placeholders = array_fill(0, count($fields), '?');
+        $fields = implode(', ', array_keys($data));
+        $placeholders = ':' . implode(', :', array_keys($data));
 
-        $sql = "INSERT INTO {$this->table} (" . implode(', ', $fields) . ") 
-                VALUES (" . implode(', ', $placeholders) . ")";
-
+        $sql = "INSERT INTO {$this->table} ($fields) VALUES ($placeholders)";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute(array_values($data));
+
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+
+        $stmt->execute();
+        return $this->db->lastInsertId();
     }
 
     public function update($id, $data) {
-        $fields = array_keys($data);
-        $set = array_map(function($field) { return "$field = ?"; }, $fields);
+        $fields = [];
+        foreach (array_keys($data) as $field) {
+            $fields[] = "$field = :$field";
+        }
 
-        $sql = "UPDATE {$this->table} SET " . implode(', ', $set) . " WHERE id = ?";
-
+        $sql = "UPDATE {$this->table} SET " . implode(', ', $fields) . " WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        $values = array_values($data);
-        $values[] = $id;
 
-        return $stmt->execute($values);
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        $stmt->bindValue(':id', $id);
+
+        return $stmt->execute();
     }
 
     public function delete($id) {

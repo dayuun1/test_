@@ -1,54 +1,37 @@
 <?php
 abstract class Controller {
-    protected $db;
+    protected $view;
 
     public function __construct() {
-        $database = new Database();
-        $this->db = $database->connect();
-        session_start();
+        $this->view = new View();
     }
 
-    protected function render($view, $data = []) {
-        extract($data);
-
-        ob_start();
-        require_once "views/{$view}.php";
-        $content = ob_get_clean();
-
-        // Буферизація залежно від статус-кодів
-        $status = http_response_code();
-        if ($status === 200) {
-            // Кешуємо успішні відповіді
-            $cacheKey = md5($_SERVER['REQUEST_URI']);
-            file_put_contents("cache/{$cacheKey}.html", $content);
-        }
-
-        echo $content;
+    protected function render($template, $data = []) {
+        return $this->view->render($template, $data);
     }
 
-    protected function renderJSON($data, $status = 200) {
-        http_response_code($status);
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    protected function redirect($url) {
+        header("Location: $url");
         exit;
     }
 
-    protected function isAdmin() {
-        return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+    protected function json($data, $statusCode = 200) {
+        http_response_code($statusCode);
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
     }
 
     protected function requireAuth() {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+        if (!Auth::check()) {
+            $this->redirect('/login');
         }
     }
 
-    protected function requireAdmin() {
-        if (!$this->isAdmin()) {
+    protected function requireRole($role) {
+        if (!Auth::hasRole($role)) {
             http_response_code(403);
-            $this->render('errors/403');
-            exit;
+            die('Access denied');
         }
     }
 }
