@@ -9,7 +9,7 @@ abstract class Controller {
     protected function render($template, $data = []) {
         extract($data);
         ob_start();
-        require __DIR__ . '/../app/views/' . $template . '.php'; // ← додай app/
+        require __DIR__ . '/../app/views/' . $template . '.php';
         return ob_get_clean();
     }
 

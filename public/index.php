@@ -15,6 +15,8 @@ $router->get('/manga/create', 'MangaController@create');
 $router->post('/manga/create', 'MangaController@create');
 $router->get('/manga/{id}', 'MangaController@show');
 
+$router->get('/api/manga/popular', 'MangaController@apiPopular');
+$router->get('/api/manga/recent', 'MangaController@apiRecent');
 // Розділи
 $router->get('/manga/{mangaId}/chapter/{number}', 'ChapterController@show');
 $router->get('/manga/{mangaId}/chapter/{number}/pdf', 'ChapterController@servePdf');

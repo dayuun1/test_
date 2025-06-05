@@ -10,7 +10,6 @@ class MangaController extends Controller {
         $this->chapterModel = new Chapter();
     }
 
-    // Головна сторінка з мангою
     public function index() {
         $popularManga = $this->mangaModel->getPopular(12);
         $recentManga = $this->mangaModel->findAll([], 12, 0);
@@ -108,7 +107,15 @@ class MangaController extends Controller {
         throw new Exception('Помилка завантаження обкладинки');
     }
 
+    public function apiPopular() {
+        $popular = $this->mangaModel->getPopular(12);
+        return $this->json($popular);
+    }
 
+    public function apiRecent() {
+        $recent = $this->mangaModel->findAll([], 12, 0);
+        return $this->json($recent);
+    }
 
 
 }
