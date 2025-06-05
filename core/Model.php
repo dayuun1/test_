@@ -35,6 +35,12 @@ abstract class Model {
         return $stmt->fetchAll();
     }
 
+    public function countAll($table) {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM $table");
+        return $stmt->fetchColumn();
+    }
+
+
     public function create($data) {
         $fields = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));

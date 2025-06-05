@@ -109,7 +109,7 @@
             setInterval(() => {
                 updatePopularManga();
                 updateRecentManga();
-            }, 3000);
+            }, 30000);
         });
     </script>
 <?php $content = ob_get_clean(); ?>

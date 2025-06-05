@@ -8,9 +8,9 @@ class AdminController extends Controller {
 
     public function dashboard() {
         $stats = [
-            'total_manga' => (new Manga())->count(),
-            'total_users' => (new User())->count(),
-            'total_chapters' => (new Chapter())->count(),
+            'total_manga' => (new Manga())->countAll('manga'),
+            'total_users' => (new User())->countAll('users'),
+            'total_chapters' => (new Chapter())->countAll('chapters'),
             'recent_users' => (new User())->findAll([], 5, 0)
         ];
 
