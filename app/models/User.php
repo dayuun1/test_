@@ -20,4 +20,11 @@ class User extends Model {
 
         return $this->create($data);
     }
+
+    public function delete($id)
+    {
+        $sql = "DELETE FROM {$this->table} WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['id' => $id]);
+    }
 }

@@ -41,7 +41,7 @@ class CharacterController extends Controller {
 
     public function create() {
         $this->requireAuth();
-        $this->requireRole('translator');
+        $this->requireRole(['translator', 'admin']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
@@ -50,7 +50,6 @@ class CharacterController extends Controller {
                 'manga_id' => $_POST['manga_id'] ?? null
             ];
 
-            // Обробка завантаження зображення
             if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
                 $data['image'] = $this->uploadImage($_FILES['image']);
             }

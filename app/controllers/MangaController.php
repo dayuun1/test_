@@ -55,7 +55,7 @@ class MangaController extends Controller {
 
     public function create() {
         $this->requireAuth();
-        $this->requireRole('translator');
+        $this->requireRole(['translator', 'admin']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [

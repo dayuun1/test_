@@ -1,12 +1,15 @@
 <?php
-class AdminController extends Controller {
-    public function __construct() {
+class AdminController extends Controller
+{
+    public function __construct()
+    {
         parent::__construct();
         $this->requireAuth();
         $this->requireRole('admin');
     }
 
-    public function dashboard() {
+    public function dashboard()
+    {
         $stats = [
             'total_manga' => (new Manga())->countAll('manga'),
             'total_users' => (new User())->countAll('users'),
@@ -20,7 +23,8 @@ class AdminController extends Controller {
         ]);
     }
 
-    public function users() {
+    public function users()
+    {
         $users = (new User())->findAll();
 
         echo $this->render('admin/users', [
@@ -29,7 +33,8 @@ class AdminController extends Controller {
         ]);
     }
 
-    public function updateUserRole($userId) {
+    public function updateUserRole($userId)
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userModel = new User();
             $userModel->update($userId, ['role' => $_POST['role']]);
@@ -37,10 +42,39 @@ class AdminController extends Controller {
         }
     }
 
-    public function clearCache() {
-        $cache = new PageCache();
-        $cache->clear();
+    public function deleteUser($userId)
+    {
 
-        $this->json(['success' => true, 'message' => 'Кеш очищено']);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userModel = new User();
+            $userModel->delete($userId);
+            $this->redirect('/admin/users');
+        }
+    }
+
+    public function deleteManga($mangaId)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $mangaModel = new Manga();
+            $mangaModel->delete($mangaId);
+            $this->redirect('/admin/manga');
+        }
+    }
+    public function manga()
+    {
+        $mangaModel = new Manga();
+        $chapterModel = new Chapter();
+
+        $mangaList = $mangaModel->findAllWithGenres();
+        $chapterCounts = $chapterModel->countAllByManga();
+
+        foreach ($mangaList as &$manga) {
+            $manga['chapters_count'] = $chapterCounts[$manga['id']] ?? 0;
+        }
+
+        echo $this->render('admin/manga', [
+            'mangaList' => $mangaList,
+            'title' => 'Керування мангою'
+        ]);
     }
 }

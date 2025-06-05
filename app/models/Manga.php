@@ -2,25 +2,10 @@
 class Manga extends Model {
     protected $table = 'manga';
 
-    public function findBySlug($slug) {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE slug = ?");
-        $stmt->execute([$slug]);
-        return $stmt->fetch();
-    }
-
-    public function getWithGenres($id) {
-        $sql = "
-            SELECT m.*, GROUP_CONCAT(g.name) as genres
-            FROM manga m
-            LEFT JOIN manga_genres mg ON m.id = mg.manga_id
-            LEFT JOIN genres g ON mg.genre_id = g.id
-            WHERE m.id = ?
-            GROUP BY m.id
-        ";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch();
+    public function getAll() {
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table} ORDER BY title ASC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getPopular($limit = 10) {
@@ -49,9 +34,28 @@ class Manga extends Model {
         }
     }
 
-
     public function incrementViews($id) {
         $stmt = $this->db->prepare("UPDATE {$this->table} SET views = views + 1 WHERE id = ?");
         return $stmt->execute([$id]);
     }
+    public function findAllWithGenres() {
+        $stmt = $this->db->query("
+        SELECT m.*, 
+               GROUP_CONCAT(g.name SEPARATOR ', ') AS genres
+        FROM manga m
+        LEFT JOIN manga_genres mg ON m.id = mg.manga_id
+        LEFT JOIN genres g ON g.id = mg.genre_id
+        GROUP BY m.id
+        ORDER BY m.created_at DESC
+    ");
+        return $stmt->fetchAll();
+    }
+
+    public function delete($id)
+    {
+        $sql = "DELETE FROM manga WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['id' => $id]);
+    }
+
 }

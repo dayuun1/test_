@@ -56,8 +56,16 @@ $router->post('/logout', 'AuthController@logout');
 $router->get('/admin', 'AdminController@dashboard');
 $router->get('/admin/users', 'AdminController@users');
 $router->post('/admin/users/{id}/role', 'AdminController@updateUserRole');
-$router->post('/admin/cache/clear', 'AdminController@clearCache');
+$router->get('/admin/manga', 'AdminController@manga');
+$router->post('/manga/{id}/delete', 'AdminController@deleteManga');
+$router->post('/users/{id}/delete', 'AdminController@deleteUser');
 
+$router->get('/teams', 'TeamController@index');
+$router->get('/teams/create', 'TeamController@create');
+$router->post('/teams/create', 'TeamController@create');
+$router->get('/teams/{id}', 'TeamController@show');
+$router->get('/teams/{id}/add-manga', 'TeamController@addMangaForm');
+$router->post('/teams/{id}/add-manga', 'TeamController@addManga');
 
 
 try {

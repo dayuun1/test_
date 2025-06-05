@@ -32,4 +32,13 @@ class Chapter extends Model {
         return (int)$result['count'];
     }
 
+    public function countAllByManga() {
+        $stmt = $this->db->query("SELECT manga_id, COUNT(*) as total FROM chapters GROUP BY manga_id");
+        $counts = [];
+        while ($row = $stmt->fetch()) {
+            $counts[$row['manga_id']] = $row['total'];
+        }
+        return $counts;
+    }
+
 }

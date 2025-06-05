@@ -30,6 +30,13 @@ ob_start(); ?>
         </div>
     </div>
 
+    <a href="/manga/create" class="btn btn-success">Додати мангу</a>
+    <a href="/characters/create" class="btn btn-info">Додати персонажа</a>
+    <a href="/genres/create" class="btn btn-warning">Додати жанр</a>
+
+    <a href="/admin/manga" class="btn btn-">Керування мангою</a>
+    <a href="/admin/users" class="btn btn-">Керування користувачами</a>
+
     <h3>Нещодавно зареєстровані користувачі</h3>
     <table class="table table-bordered table-striped">
         <thead>
@@ -45,7 +52,7 @@ ob_start(); ?>
         <?php foreach ($stats['recent_users'] as $user): ?>
             <tr>
                 <td><?= $user['id'] ?></td>
-                <td><?= htmlspecialchars($user['name']) ?></td>
+                <td><?= htmlspecialchars($user['username']) ?></td>
                 <td><?= htmlspecialchars($user['email']) ?></td>
                 <td><?= htmlspecialchars($user['role']) ?></td>
                 <td><?= date('d.m.Y H:i', strtotime($user['created_at'])) ?></td>

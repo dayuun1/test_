@@ -31,10 +31,18 @@ abstract class Controller {
         }
     }
 
-    protected function requireRole($role) {
-        if (!Auth::hasRole($role)) {
-            http_response_code(403);
-            die('Access denied');
+    protected function requireRole($roles) {
+        if (is_string($roles)) {
+            $roles = [$roles];
         }
+
+        foreach ($roles as $role) {
+            if (Auth::hasRole($role)) {
+                return;
+            }
+        }
+
+        http_response_code(403);
+        echo $this->render('errors/403');
     }
 }
