@@ -53,6 +53,14 @@ class CharacterController extends Controller {
             if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
                 $data['image'] = $this->uploadImage($_FILES['image']);
             }
+            $user = Auth::user();
+            $teamModel = new Team();
+
+            if (!(Auth::hasRole('admin') ||(Auth::hasRole('translator') && $teamModel->userHasAccessToManga($user['id'], $_POST['manga_id'])))) {
+                http_response_code(403);
+                echo $this->render('errors/403');
+                return;
+            }
 
             $this->characterModel->create($data);
             $this->redirect('/characters');

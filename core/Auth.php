@@ -9,7 +9,6 @@ class Auth {
             $_SESSION['user_role'] = $user['role'];
             return true;
         }
-
         return false;
     }
 

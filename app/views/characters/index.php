@@ -1,8 +1,11 @@
 <?php ob_start(); ?>
 
 <h1>Усі персонажі</h1>
-
+<?php
+$teamModel = new Team();
+if (Auth::check() && (Auth::hasRole('translator') || Auth::hasRole('admin'))): ?>
 <a href="/characters/create" class="btn btn-success mb-3"> Додати персонажа</a>
+<?php endif; ?>
 
 <?php if (empty($characters)): ?>
     <p>Персонажі відсутні.</p>
@@ -12,7 +15,7 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     <?php if (!empty($character['image'])): ?>
-                        <img src="/public/uploads/characters/<?= htmlspecialchars($character['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($character['name']) ?>">
+                        <img src="/public/uploads/characters/<?= htmlspecialchars($character['image']) ?>" style="height: 400px; object-fit: cover;" class="card-img-top" alt="<?= htmlspecialchars($character['name']) ?>">
                     <?php endif; ?>
                     <div class="card-body">
                         <h5 class="card-title"><?= htmlspecialchars($character['name']) ?></h5>

@@ -10,7 +10,6 @@ class View {
     public function render($template, $data = []) {
         $cacheKey = $template . '_' . md5(serialize($data));
 
-        // Перевіряємо кеш для успішних сторінок
         if (http_response_code() == 200) {
             $cached = $this->cache->get($cacheKey, 200);
             if ($cached !== false) {
@@ -31,7 +30,6 @@ class View {
 
         $output = ob_get_clean();
 
-        // Кешуємо тільки успішні сторінки
         if (http_response_code() == 200) {
             $this->cache->set($cacheKey, $output, 200);
         }

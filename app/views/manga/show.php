@@ -41,12 +41,12 @@
                         <div class="col-md-2 mb-2">
                             <div class="card h-100">
                                 <?php if (!empty($character['image'])): ?>
-                                    <img src="/public/uploads/characters/<?= htmlspecialchars($character['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($character['name']) ?>">
+                                    <img src="/public/uploads/characters/<?= htmlspecialchars($character['image']) ?>" style="height: 200px; object-fit: cover;" class="card-img-top" alt="<?= htmlspecialchars($character['name']) ?>">
                                 <?php endif; ?>
                                 <div class="card-body">
                                     <h5 class="card-title"><?= htmlspecialchars($character['name']) ?></h5>
                                     <?php if (!empty($character['description'])): ?>
-                                        <p class="card-text"><?= htmlspecialchars(mb_strimwidth($character['description'], 0, 100, '...')) ?></p>
+                                        <p class="card-text"><?= htmlspecialchars(mb_strimwidth($character['description'], 0, 20, '...')) ?></p>
                                     <?php endif; ?>
                                     <a href="/characters/<?= $character['id'] ?>" class="btn btn-sm btn-outline-primary">Детальніше</a>
                                 </div>
@@ -57,7 +57,9 @@
             </div>
         <?php endif; ?>
     </div>
-<?php if (Auth::check() && (Auth::hasRole('translator') || Auth::hasRole('admin'))): ?>
+<?php
+$teamModel = new Team();
+if (Auth::check() && (Auth::hasRole('translator') && $teamModel->userHasAccessToManga(Auth::user()['id'], $manga['id']) || Auth::hasRole('admin'))): ?>
     <a href="/manga/<?= $manga['id'] ?>/upload" class="btn btn-success">Завантажити розділ</a>
 <?php endif; ?>
 

@@ -79,5 +79,49 @@ class TeamController extends Controller {
 
         $this->redirect('/teams/' . $teamId);
     }
+    public function addMemberForm($teamId) {
+        $this->requireAuth();
 
+        $team = $this->teamModel->find($teamId);
+        $user = Auth::user();
+
+        if (!(Auth::hasRole('admin') || ($this->teamModel->isMember($teamId, $user['id']) && $user['role'] === 'translator'))) {
+            http_response_code(403);
+            echo $this->render('errors/403');
+            return;
+        }
+
+        $allUsers = (new User())->findAll();
+        echo $this->render('teams/add_member', [
+            'team' => $team,
+            'users' => $allUsers
+        ]);
+    }
+
+    public function addMember($teamId) {
+        $this->requireAuth();
+
+        $team = $this->teamModel->find($teamId);
+        $user = Auth::user();
+
+        if (!(Auth::hasRole('admin') || ($this->teamModel->isMember($teamId, $user['id']) && $user['role'] === 'translator'))) {
+            http_response_code(403);
+            echo $this->render('errors/403');
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'])) {
+            $userId = $_POST['user_id'];
+
+            $this->teamModel->addMember($teamId, $userId);
+
+            $userModel = new User();
+            $userModel->update($userId, ['role' => 'translator']);
+
+            $this->redirect('/teams/' . $teamId);
+        }
+
+        http_response_code(400);
+        echo "Некоректний запит.";
+    }
 }

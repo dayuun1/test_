@@ -15,7 +15,9 @@
     <?php endforeach; ?>
 </ul>
 
-<h3>Мангa з доступом</h3>
+
+<h3>Манґа з доступом</h3>
+<div class="row">
     <?php foreach ($accessibleManga as $manga): ?>
         <div class="col-md-3 col-sm-6 mb-4">
             <div class="card h-100">
@@ -35,8 +37,14 @@
             </div>
         </div>
     <?php endforeach; ?>
+</div>
 <?php if (Auth::hasRole('admin') || Auth::user()['id'] == $team['created_by']): ?>
     <a href="/teams/<?= $team['id'] ?>/add-manga" class="btn btn-success">Додати мангу</a>
+<?php endif; ?>
+<?php
+$teamModel = new Team();
+if (Auth::hasRole('admin') || (Auth::user()['role'] === 'translator' && $teamModel->isMember($team['id'], Auth::user()['id']))): ?>
+    <a href="/teams/<?= $team['id'] ?>/add-member" class="btn btn-secondary mt-2">Додати учасника</a>
 <?php endif; ?>
 <?php $content = ob_get_clean(); ?>
 <?php include __DIR__ . '/../layouts/main.php'; ?>

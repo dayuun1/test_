@@ -66,7 +66,8 @@ $router->post('/teams/create', 'TeamController@create');
 $router->get('/teams/{id}', 'TeamController@show');
 $router->get('/teams/{id}/add-manga', 'TeamController@addMangaForm');
 $router->post('/teams/{id}/add-manga', 'TeamController@addManga');
-
+$router->get('/teams/{id}/add-member', 'TeamController@addMemberForm');
+$router->post('/teams/{id}/add-member', 'TeamController@addMember');
 
 try {
     $router->dispatch();

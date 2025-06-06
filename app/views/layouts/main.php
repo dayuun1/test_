@@ -19,6 +19,7 @@
             <a class="nav-link" href="/characters">Персонажі</a>
             <a class="nav-link" href="/news">Новини</a>
             <a class="nav-link" href="/forum">Форум</a>
+            <a class="nav-link" href="/teams">Команди</a>
         </div>
 
         <div class="navbar-nav">

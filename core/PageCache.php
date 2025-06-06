@@ -23,11 +23,10 @@ class PageCache {
     public function set($key, $content, $statusCode = 200) {
         $filename = $this->getCacheFilename($key, $statusCode);
 
-        // Кешуємо залежно від статус-коду
         $cacheConfig = [
-            200 => 3600,    // Успішні сторінки - 1 година
-            404 => 300,     // 404 помилки - 5 хвилин
-            500 => 60       // Серверні помилки - 1 хвилина
+            200 => 3600,
+            404 => 300,
+            500 => 60
         ];
 
         $ttl = isset($cacheConfig[$statusCode]) ? $cacheConfig[$statusCode] : $this->defaultTTL;

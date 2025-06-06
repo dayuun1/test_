@@ -1,10 +1,9 @@
 <?php
 class ChapterUpload {
     private $uploadDir = 'storage/uploads/chapters/';
-    private $maxFileSize = 50 * 1024 * 1024; // 50MB
+    private $maxFileSize = 100 * 1024 * 1024;
 
     public function upload($mangaId, $chapterNumber, $file) {
-        // Валідація файлу
         if ($file['type'] !== 'application/pdf') {
             throw new Exception('Тільки PDF файли дозволені');
         }
@@ -13,13 +12,11 @@ class ChapterUpload {
             throw new Exception('Файл занадто великий (максимум 100MB)');
         }
 
-        // Створення директорії
         $mangaDir = $this->uploadDir . $mangaId . '/';
         if (!is_dir($mangaDir)) {
             mkdir($mangaDir, 0755, true);
         }
 
-        // Збереження файлу
         $filename = $chapterNumber . '.pdf';
         $filepath = $mangaDir . $filename;
 

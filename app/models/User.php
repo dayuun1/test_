@@ -27,4 +27,5 @@ class User extends Model {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }
+
 }

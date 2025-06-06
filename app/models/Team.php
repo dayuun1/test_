@@ -50,4 +50,21 @@ class Team extends Model {
         $stmt = $this->db->prepare("INSERT INTO team_manga_access (team_id, manga_id) VALUES (?, ?)");
         $stmt->execute([$teamId, $mangaId]);
     }
+
+    public function userHasAccessToManga($userId, $mangaId) {
+        $stmt = $this->db->prepare("
+        SELECT 1 FROM team_user tu
+        JOIN team_manga_access tma ON tu.team_id = tma.team_id
+        WHERE tu.user_id = ? AND tma.manga_id = ?
+        LIMIT 1
+    ");
+        $stmt->execute([$userId, $mangaId]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    public function isMember($teamId, $userId) {
+        $stmt = $this->db->prepare("SELECT 1 FROM team_user WHERE team_id = ? AND user_id = ?");
+        $stmt->execute([$teamId, $userId]);
+        return $stmt->fetch() !== false;
+    }
 }

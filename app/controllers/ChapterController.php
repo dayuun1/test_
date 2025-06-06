@@ -9,7 +9,6 @@ class ChapterController extends Controller {
         $this->mangaModel = new Manga();
     }
 
-    // Перегляд розділу
     public function show($mangaId, $chapterNumber) {
         $manga = $this->mangaModel->find($mangaId);
         if (!$manga) {
@@ -38,10 +37,15 @@ class ChapterController extends Controller {
         ]);
     }
 
-    // Завантаження PDF розділу
     public function upload($mangaId) {
-        $this->requireAuth();
-        $this->requireRole('translator');
+        $user = Auth::user();
+        $teamModel = new Team();
+
+        if (!(Auth::hasRole('translator') && $teamModel->userHasAccessToManga($user['id'], $mangaId)) && !Auth::hasRole('admin')) {
+            http_response_code(403);
+            echo $this->render('errors/403');
+            return;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
