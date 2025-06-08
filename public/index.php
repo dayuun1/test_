@@ -23,6 +23,15 @@ $router->get('/manga/{mangaId}/chapter/{number}/pdf', 'ChapterController@servePd
 $router->get('/manga/{id}/upload', 'ChapterController@upload');
 $router->post('/manga/{id}/upload', 'ChapterController@upload');
 
+// Встановлення рейтингу (POST запит)
+$router->post('/manga/{mangaId}/set-rating', 'MangaController@setRating');
+$router->post('/manga/{mangaId}/add-comment', 'MangaController@addComment');
+$router->post('/comments/{commentId}/delete', 'MangaController@deleteComment');
+
+// Додавання зовнішнього рейтингу (тільки для адмінів)
+$router->get('/manga/{mangaId}/external-rating', 'MangaController@addExternalRating');
+$router->post('/manga/{mangaId}/external-rating', 'MangaController@addExternalRating');
+
 // Жанри
 $router->get('/genres', 'GenreController@index');
 $router->get('/genres/{id}', 'GenreController@show');
