@@ -24,8 +24,8 @@ class NewsController extends Controller {
         ]);
     }
 
-    public function show($slug) {
-        $article = $this->newsModel->findBySlug($slug);
+    public function show($id) {
+        $article = $this->newsModel->find($id);
 
         if (!$article || !$article['is_published']) {
             http_response_code(404);
@@ -48,13 +48,11 @@ class NewsController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'title' => $_POST['title'],
-                'slug' => $this->generateSlug($_POST['title']),
                 'content' => $_POST['content'],
                 'author_id' => Auth::user()['id'],
                 'is_published' => isset($_POST['is_published']) ? 1 : 0
             ];
 
-            // Обробка завантаження зображення
             if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
                 $data['image'] = $this->uploadImage($_FILES['image']);
             }
@@ -82,7 +80,6 @@ class NewsController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'title' => $_POST['title'],
-                'slug' => $this->generateSlug($_POST['title']),
                 'content' => $_POST['content'],
                 'is_published' => isset($_POST['is_published']) ? 1 : 0
             ];
@@ -93,7 +90,7 @@ class NewsController extends Controller {
             }
 
             $this->newsModel->update($id, $data);
-            $this->redirect('/news/' . $data['slug']);
+            $this->redirect('/news/' . $id);
         }
 
         echo $this->render('news/edit', [
@@ -102,9 +99,6 @@ class NewsController extends Controller {
         ]);
     }
 
-    private function generateSlug($title) {
-        return strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', trim($title)));
-    }
 
     private function uploadImage($file) {
         $uploadDir = 'public/uploads/news/';

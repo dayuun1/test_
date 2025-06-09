@@ -14,7 +14,6 @@ class Router {
         $method = $_SERVER['REQUEST_METHOD'];
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        // Пошук точного співпадіння
         if (isset($this->routes[$method][$path])) {
             return $this->executeCallback($this->routes[$method][$path]);
         }
@@ -30,7 +29,7 @@ class Router {
         }
 
         http_response_code(404);
-        echo "Page not found";
+        require '../app/views/errors/404.php';
     }
 
     private function convertToRegex($route) {

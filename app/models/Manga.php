@@ -58,4 +58,11 @@ class Manga extends Model {
         return $stmt->execute(['id' => $id]);
     }
 
+    public function searchByTitle($query) {
+        $sql = "SELECT * FROM manga WHERE title LIKE :query ORDER BY views DESC LIMIT 50";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['query' => '%' . $query . '%']);
+        return $stmt->fetchAll();
+    }
+
 }

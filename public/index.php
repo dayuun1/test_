@@ -45,14 +45,11 @@ $router->post('/characters/create', 'CharacterController@create');
 
 // Новини
 $router->get('/news', 'NewsController@index');
-$router->get('/news/{slug}', 'NewsController@show');
-
-// Форум
-$router->get('/forum', 'ForumController@index');
-$router->get('/forum/category/{id}', 'ForumController@category');
-$router->get('/forum/topic/{id}', 'ForumController@topic');
-$router->get('/forum/category/{id}/create-topic', 'ForumController@createTopic');
-$router->post('/forum/category/{id}/create-topic', 'ForumController@createTopic');
+$router->get('/news/{id}', 'NewsController@show');
+$router->get('/news/create', 'NewsController@create');
+$router->post('/news/create', 'NewsController@create');
+$router->get('/news/edit/{id}', 'NewsController@edit');
+$router->post('/news/edit/{id}', 'NewsController@edit');
 
 // Аутентифікація
 $router->get('/login', 'AuthController@showLogin');
@@ -77,6 +74,8 @@ $router->get('/teams/{id}/add-manga', 'TeamController@addMangaForm');
 $router->post('/teams/{id}/add-manga', 'TeamController@addManga');
 $router->get('/teams/{id}/add-member', 'TeamController@addMemberForm');
 $router->post('/teams/{id}/add-member', 'TeamController@addMember');
+
+$router->get('/search', 'SearchController@index');
 
 try {
     $router->dispatch();

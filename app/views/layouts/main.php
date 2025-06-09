@@ -18,10 +18,12 @@
             <a class="nav-link" href="/genres">Жанри</a>
             <a class="nav-link" href="/characters">Персонажі</a>
             <a class="nav-link" href="/news">Новини</a>
-            <a class="nav-link" href="/forum">Форум</a>
             <a class="nav-link" href="/teams">Команди</a>
         </div>
-
+        <form class="d-flex me-3" method="GET" action="/search">
+            <input class="form-control me-2" type="search" name="q" placeholder="Пошук манги..." aria-label="Пошук">
+            <button class="btn btn-outline-light" type="submit">Пошук</button>
+        </form>
         <div class="navbar-nav">
             <?php if (Auth::check()): ?>
                 <div class="dropdown">
