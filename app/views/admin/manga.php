@@ -38,7 +38,7 @@
                 <td><?= date('d.m.Y H:i', strtotime($manga['created_at'])) ?></td>
                 <td class="d-flex gap-1 flex-wrap">
                     <a href="/manga/<?= $manga['id'] ?>" class="btn btn-sm btn-outline-primary">Переглянути</a>
-                    <a href="/manga/<?= $manga['id'] ?>/edit" class="btn btn-sm btn-outline-warning">Редагувати</a>
+                    <a href="/manga/edit/<?= $manga['id'] ?>" class="btn btn-sm btn-outline-warning">Редагувати</a>
                     <form method="post" action="/manga/<?= $manga['id'] ?>/delete"
                           onsubmit="return confirm('Видалити цю мангу?')" class="d-inline">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Видалити</button>

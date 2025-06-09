@@ -47,6 +47,34 @@ class TeamController extends Controller {
         echo $this->render('teams/create');
     }
 
+    public function edit($id) {
+        $this->requireAuth();
+        $this->requireRole(['admin', 'translator']);
+
+        $team = $this->teamModel->find($id);
+        if (!$team) {
+            http_response_code(404);
+            echo $this->render('errors/404');
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'name' => $_POST['name'],
+                'description' => $_POST['description']
+            ];
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+                $data['image'] = $this->uploadImage($_FILES['image']);
+            }
+            $this->teamModel->update($id, $data);
+            $this->redirect('/teams/' . $id);
+        }
+
+        echo $this->render('teams/edit', [
+            'team' => $team,
+            'title' => 'Редагувати команду'
+        ]);
+    }
     private function uploadImage($file) {
         $dir = 'public/uploads/teams/';
         if (!is_dir($dir)) mkdir($dir, 0755, true);

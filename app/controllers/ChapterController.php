@@ -105,4 +105,47 @@ class ChapterController extends Controller {
         $pageCount = preg_match_all('/\/Page\W/', $content);
         return $pageCount ?: 1;
     }
+
+    public function edit($id)
+    {
+        $this->requireAuth();
+        $this->requireRole(['translator', 'admin']);
+
+        $chapter = $this->chapterModel->find($id);
+        if (!$chapter) {
+            http_response_code(404);
+            echo $this->render('errors/404');
+            return;
+        }
+
+        $user = Auth::user();
+        $teamModel = new Team();
+        if (!(Auth::hasRole('admin') ||
+            (Auth::hasRole('translator') && $teamModel->userHasAccessToManga($user['id'], $chapter['manga_id'])))) {
+            http_response_code(403);
+            echo $this->render('errors/403');
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'chapter_number' => $_POST['chapter_number'],
+                'title' => $_POST['title'],
+            ];
+
+            if (isset($_FILES['pdf']) && $_FILES['pdf']['error'] === 0) {
+                $uploader = new ChapterUpload();
+                $data['pdf_path'] = $uploader->upload($chapter['manga_id'], $_POST['chapter_number'], $_FILES['pdf']);
+                $data['pages_count'] = $this->getPdfPageCount($data['pdf_path']);
+            }
+
+            $this->chapterModel->update($id, $data);
+            $this->redirect('/manga/' . $chapter['manga_id']);
+        }
+
+        echo $this->render('chapters/edit', [
+            'chapter' => $chapter,
+            'title' => 'Редагувати розділ'
+        ]);
+    }
 }

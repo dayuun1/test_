@@ -73,6 +73,49 @@ class CharacterController extends Controller {
         ]);
     }
 
+    public function edit($id)
+    {
+        $this->requireAuth();
+        $this->requireRole(['translator', 'admin']);
+
+        $character = $this->characterModel->find($id);
+        if (!$character) {
+            http_response_code(404);
+            echo $this->render('errors/404');
+            return;
+        }
+
+        $user = Auth::user();
+        $teamModel = new Team();
+        if (!(Auth::hasRole('admin') ||
+            (Auth::hasRole('translator') && $teamModel->userHasAccessToManga($user['id'], $character['manga_id'])))
+        ) {
+            http_response_code(403);
+            echo $this->render('errors/403');
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'name' => $_POST['name'],
+                'description' => $_POST['description'] ?? '',
+                'manga_id' => $_POST['manga_id'] ?: null
+            ];
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+                $data['image'] = $this->uploadImage($_FILES['image']);
+            }
+            $this->characterModel->update($id, $data);
+            $this->redirect('/characters/' . $id);
+        }
+
+        $allManga = $this->mangaModel->findAll();
+        echo $this->render('characters/edit', [
+            'character' => $character,
+            'allManga' => $allManga,
+            'title' => 'Редагувати персонажа'
+        ]);
+    }
+
     private function uploadImage($file) {
         $uploadDir = 'public/uploads/characters/';
         if (!is_dir($uploadDir)) {

@@ -4,20 +4,6 @@ class News extends Model
 {
     protected $table = 'news';
 
-    public function findBySlug($slug)
-    {
-        $sql = "
-            SELECT n.*, u.username as author_name
-            FROM {$this->table} n
-            LEFT JOIN users u ON n.author_id = u.id
-            WHERE n.slug = ?
-        ";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$slug]);
-        return $stmt->fetch();
-    }
-
     public function getPublished($limit = 10, $offset = 0)
     {
         $sql = "
@@ -64,5 +50,22 @@ class News extends Model
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public function delete($id)
+    {
+        // Спочатку отримуємо інформацію про новину для видалення файлу зображення
+        $news = $this->find($id);
+
+        if ($news && $news['image']) {
+            $imagePath = 'public/uploads/news/' . $news['image'];
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        $sql = "DELETE FROM {$this->table} WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['id' => $id]);
     }
 }

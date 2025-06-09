@@ -1,15 +1,18 @@
 <?php
-class GenreController extends Controller {
+class GenreController extends Controller
+{
     private $genreModel;
     private $mangaModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->genreModel = new Genre();
         $this->mangaModel = new Manga();
     }
 
-    public function index() {
+    public function index()
+    {
         $genres = $this->genreModel->findAll();
 
         echo $this->render('genres/index', [
@@ -18,7 +21,8 @@ class GenreController extends Controller {
         ]);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $genre = $this->genreModel->findById($id);
 
         if (!$genre) {
@@ -36,14 +40,14 @@ class GenreController extends Controller {
         ]);
     }
 
-    public function create() {
+    public function create()
+    {
         $this->requireAuth();
         $this->requireRole('admin');
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'name' => $_POST['name'],
-                'slug' => $this->generateSlug($_POST['name']),
                 'description' => $_POST['description'] ?? ''
             ];
 
@@ -56,17 +60,30 @@ class GenreController extends Controller {
         ]);
     }
 
-    public function getMangaByGenre($genreId) {
-        $stmt = $this->db->prepare("
-        SELECT m.* FROM manga m
-        JOIN manga_genres mg ON m.id = mg.manga_id
-        WHERE mg.genre_id = ?
-    ");
-        $stmt->execute([$genreId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    public function edit($id)
+    {
+        $this->requireAuth();
+        $this->requireRole('admin');
 
-    private function generateSlug($name) {
-        return strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', trim($name)));
+        $genre = $this->genreModel->findById($id);
+        if (!$genre) {
+            http_response_code(404);
+            echo $this->render('errors/404');
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'name' => $_POST['name'],
+                'description' => $_POST['description'] ?? ''
+            ];
+            $this->genreModel->update($id, $data);
+            $this->redirect('/genres/' . $id);
+        }
+
+        echo $this->render('genres/edit', [
+            'genre' => $genre,
+            'title' => 'Редагувати жанр'
+        ]);
     }
 }

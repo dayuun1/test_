@@ -11,7 +11,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/">MangaSite</a>
+        <a class="navbar-brand" href="/">MangaUA</a>
 
         <div class="navbar-nav me-auto">
             <a class="nav-link" href="/manga">Манга</a>

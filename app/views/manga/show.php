@@ -149,11 +149,23 @@ if (Auth::check() && (Auth::hasRole('translator') && $teamModel->userHasAccessTo
         <p><a href="/login">Увійдіть</a>, щоб залишити коментар.</p>
     <?php endif; ?>
 
-    <?php foreach ($comments as $comment): ?>
-        <div class="mt-3 border-bottom pb-2">
-            <strong><?= htmlspecialchars($comment['username']) ?></strong> <small class="text-muted"><?= $comment['created_at'] ?></small>
-            <p><?= nl2br(htmlspecialchars($comment['content'])) ?></p>
-
+   <?php foreach ($comments as $comment): ?>
+    <div class="mt-3 border-bottom pb-2">
+        <strong>
+            <?php
+            $username = 'Невідомий користувач';
+            foreach ($users as $user) {
+                if ($user['id'] == $comment['user_id']) {
+                    $username = $user['username'];
+                    break;
+                }
+            }
+            echo htmlspecialchars($username);
+            ?>
+        </strong>
+        <small class="text-muted"><?= $comment['created_at'] ?></small>
+        <p><?= nl2br(htmlspecialchars($comment['content'])) ?></p>
+    </div>
             <?php if (!empty($comment['replies'])): ?>
                 <div class="ms-4">
                     <?php foreach ($comment['replies'] as $reply): ?>
@@ -181,7 +193,6 @@ if (Auth::check() && (Auth::hasRole('translator') && $teamModel->userHasAccessTo
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // РЕЙТИНГ
         const ratingForm = document.getElementById("rating-form");
         if (ratingForm) {
             ratingForm.addEventListener("submit", async (e) => {
@@ -203,7 +214,6 @@ if (Auth::check() && (Auth::hasRole('translator') && $teamModel->userHasAccessTo
             });
         }
 
-        // КОМЕНТАРІ
         const commentForm = document.getElementById("comment-form");
         if (commentForm) {
             commentForm.addEventListener("submit", async (e) => {

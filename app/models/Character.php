@@ -42,4 +42,20 @@ class Character extends Model {
         $stmt->execute([$mangaId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function delete($id)
+    {
+        $character = $this->find($id);
+
+        if ($character && $character['image']) {
+            $imagePath = 'public/uploads/characters/' . $character['image'];
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        $sql = "DELETE FROM {$this->table} WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['id' => $id]);
+    }
 }

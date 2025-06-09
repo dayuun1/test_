@@ -39,4 +39,12 @@ class Genre extends Model {
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public function getAll() {
+        $sql = "SELECT * FROM {$this->table} ORDER BY name";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
 }

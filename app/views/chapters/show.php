@@ -23,6 +23,11 @@
             <a href="/manga/<?= $manga['id'] ?>" class="btn btn-outline-primary">Назад до манги</a>
             <a href="/manga/<?= $manga['id'] ?>/chapter/<?= $chapter['chapter_number'] ?>/pdf"
                class="btn btn-primary" target="_blank">Читати PDF</a>
+            <?php
+            $teamModel = new Team();
+            if (Auth::check() && (Auth::hasRole('translator') && $teamModel->userHasAccessToManga(Auth::user()['id'], $manga['id']) || Auth::hasRole('admin'))): ?>
+                <a href="/manga/<?= $manga['id'] ?>/chapter/edit/<?= $chapter['id'] ?>" class="btn btn-warning">Редагувати розділ</a>
+            <?php endif; ?>
         </div>
     </div>
 </div>

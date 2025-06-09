@@ -72,6 +72,8 @@ class MangaController extends Controller {
             $comment['replies'] = $this->commentModel->getReplies($comment['id']);
         }
 
+        $users = (new User())->findAll();
+
         echo $this->render('manga/show', [
             'manga' => $manga,
             'chapters' => $chapters,
@@ -85,11 +87,11 @@ class MangaController extends Controller {
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'commentsPage' => $commentsPage,
+            'users' => $users,
             'totalCommentsPages' => $totalCommentsPages,
         ]);
     }
 
-    // AJAX метод для встановлення рейтингу
     public function setRating($mangaId) {
         if (!Auth::check()) {
             http_response_code(401);
@@ -233,7 +235,6 @@ class MangaController extends Controller {
         ]);
     }
 
-    // Інші методи залишаються без змін...
     public function create() {
         $this->requireAuth();
         $this->requireRole(['translator', 'admin']);
@@ -287,12 +288,66 @@ class MangaController extends Controller {
     }
 
     public function apiPopular() {
-        $popular = $this->mangaModel->getPopular(12);
+        $popular = $this->mangaModel->getPopular(10);
         return $this->json($popular);
     }
 
     public function apiRecent() {
-        $recent = $this->mangaModel->findAll([], 12, 0);
+        $recent = $this->mangaModel->findAll([], 10, 0);
         return $this->json($recent);
+    }
+
+    public function edit($id)
+    {
+        $this->requireAuth();
+        $this->requireRole(['translator', 'admin']);
+
+        $manga = $this->mangaModel->find($id);
+        if (!$manga) {
+            http_response_code(404);
+            echo $this->render('errors/404');
+            return;
+        }
+
+        $user = Auth::user();
+        $teamModel = new Team();
+        if (!(Auth::hasRole('admin') ||
+            (Auth::hasRole('translator') && $teamModel->userHasAccessToManga($user['id'], $manga['id'])))) {
+            http_response_code(403);
+            echo $this->render('errors/403');
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'title' => $_POST['title'],
+                'description' => $_POST['description'] ?? '',
+                'author' => $_POST['author'] ?? '',
+                'artist' => $_POST['artist'] ?? '',
+                'status' => $_POST['status'] ?? 'ongoing'
+            ];
+
+            if (isset($_FILES['cover']) && $_FILES['cover']['error'] === 0) {
+                $data['cover_image'] = $this->uploadCover($_FILES['cover']);
+            }
+
+            $this->mangaModel->update($id, $data);
+
+            if (isset($_POST['genres'])) {
+                $this->mangaModel->updateGenres($id, $_POST['genres']);
+            }
+
+            $this->redirect('/manga/' . $id);
+        }
+
+        $allGenres = (new Genre())->findAll();
+        $selectedGenres = $this->mangaModel->getGenres($id);
+
+        echo $this->render('manga/edit', [
+            'manga' => $manga,
+            'allGenres' => $allGenres,
+            'selectedGenres' => array_column($selectedGenres, 'id'),
+            'title' => 'Редагувати мангу'
+        ]);
     }
 }

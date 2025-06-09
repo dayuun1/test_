@@ -65,4 +65,14 @@ class Manga extends Model {
         return $stmt->fetchAll();
     }
 
+    public function updateGenres($mangaId, $genreIds) {
+        $stmt = $this->db->prepare("DELETE FROM manga_genres WHERE manga_id = ?");
+        $stmt->execute([$mangaId]);
+
+        $stmt = $this->db->prepare("INSERT INTO manga_genres (manga_id, genre_id) VALUES (?, ?)");
+        foreach ($genreIds as $genreId) {
+            $stmt->execute([$mangaId, $genreId]);
+        }
+    }
+
 }

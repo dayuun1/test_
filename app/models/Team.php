@@ -12,6 +12,7 @@ class Team extends Model {
         return $stmt->fetchAll();
     }
 
+
     public function getMembers($teamId) {
         $stmt = $this->db->prepare("
             SELECT u.* FROM users u
@@ -66,5 +67,21 @@ class Team extends Model {
         $stmt = $this->db->prepare("SELECT 1 FROM team_user WHERE team_id = ? AND user_id = ?");
         $stmt->execute([$teamId, $userId]);
         return $stmt->fetch() !== false;
+    }
+
+    public function delete($id)
+    {
+        $team = $this->find($id);
+
+        if ($team && $team['image']) {
+            $imagePath = 'public/uploads/teams/' . $team['image'];
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        $sql = "DELETE FROM {$this->table} WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['id' => $id]);
     }
 }
