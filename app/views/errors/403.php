@@ -2,20 +2,16 @@
 ob_start(); ?>
 
     <div class="row justify-content-center">
-        <div class="col-md-6 text-center">
+        <div class="col-md-10 text-center">
             <div class="error-template">
-                <h1 class="display-1 text-muted">403</h1>
-                <h2>Сторінку не знайдено!</h2>
+                <img src="\public\errors\403.png" alt="403 Image" class="img-fluid mb-4" style="max-height: 500px;">
                 <div class="error-details mb-4">
-                    Вибачте, але сторінка, яку ви шукаєте, не існує.
+                    Вибачте, у вас немає доступу.
                 </div>
                 <div class="error-actions">
                     <a href="/" class="btn btn-primary btn-lg">
                         <i class="icon-home"></i>
                         На головну
-                    </a>
-                    <a href="/manga" class="btn btn-outline-primary btn-lg">
-                        Каталог манги
                     </a>
                 </div>
             </div>
@@ -37,5 +33,5 @@ ob_start(); ?>
     </style>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = 'Сторінку не знайдено - 403'; ?>
+<?php $title = 'Немає доступу - 403'; ?>
 <?php include __DIR__ . '/../layouts/main.php'; ?>

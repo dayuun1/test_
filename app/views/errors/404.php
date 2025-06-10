@@ -2,10 +2,9 @@
 ob_start(); ?>
 
     <div class="row justify-content-center">
-        <div class="col-md-6 text-center">
+        <div class="col-md-10 text-center">
             <div class="error-template">
-                <h1 class="display-1 text-muted">404</h1>
-                <h2>Сторінку не знайдено!</h2>
+                <img src="\public\errors\404.png" alt="404 Image" class="img-fluid mb-4" style="max-height: 500px;">
                 <div class="error-details mb-4">
                     Вибачте, але сторінка, яку ви шукаєте, не існує.
                 </div>
@@ -13,9 +12,6 @@ ob_start(); ?>
                     <a href="/" class="btn btn-primary btn-lg">
                         <i class="icon-home"></i>
                         На головну
-                    </a>
-                    <a href="/manga" class="btn btn-outline-primary btn-lg">
-                        Каталог манги
                     </a>
                 </div>
             </div>

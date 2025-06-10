@@ -89,7 +89,6 @@ class AuthController extends Controller {
 
                 $userId = $this->userModel->createUser($userData);
 
-                // Автоматичний вхід після реєстрації
                 Auth::attempt($username, $password);
                 $this->redirect('/');
             } else {

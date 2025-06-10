@@ -60,8 +60,8 @@ class Router {
 
         header_remove('Cache-Control');
         HttpHelper::applyCacheHeaders($statusCode);
-        $view = new View();
-        $content = $view->render('errors/404', []);
+        $con = new ChapterController();
+        $content = $con->render('errors/404');
         echo $content;
     }
 

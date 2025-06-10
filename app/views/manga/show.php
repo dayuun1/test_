@@ -155,7 +155,10 @@ if (Auth::check() && (Auth::hasRole('translator') && $teamModel->userHasAccessTo
             <?php
             $username = 'Невідомий користувач';
             foreach ($users as $user) {
-                if ($user['id'] == $comment['user_id']) {
+                if($user['id'] == Auth::user()['id']) {
+                    $username = 'Ви';
+                }
+                else if ($user['id'] == $comment['user_id']) {
                     $username = $user['username'];
                     break;
                 }
@@ -229,7 +232,7 @@ if (Auth::check() && (Auth::hasRole('translator') && $teamModel->userHasAccessTo
 
                 if (result.success) {
                     const textarea = commentForm.querySelector("textarea");
-                    const userName = "Ви"; // Або отримати з JS, якщо ім’я користувача доступне
+                    const userName = "Ви";
                     const now = new Date().toLocaleString('uk-UA');
                     const newComment = document.createElement("div");
 

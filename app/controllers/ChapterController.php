@@ -73,25 +73,25 @@ class ChapterController extends Controller {
     public function servePdf($mangaId, $chapterNumber) {
         if (!Auth::check()) {
             http_response_code(401);
-            die('Unauthorized');
+            echo $this->render('errors/401');
         }
 
         $manga = $this->mangaModel->find($mangaId);
         if (!$manga) {
             http_response_code(404);
-            die('Manga not found');
+            echo $this->render('errors/404');
         }
 
         $chapter = $this->chapterModel->findByMangaAndNumber($manga['id'], $chapterNumber);
         if (!$chapter) {
             http_response_code(404);
-            die('Chapter not found');
+            echo $this->render('errors/404');
         }
 
         $filepath = $chapter['pdf_path'];
         if (!file_exists($filepath)) {
             http_response_code(404);
-            die('File not found');
+            echo $this->render('errors/404');
         }
 
         header('Content-Type: application/pdf');

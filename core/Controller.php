@@ -8,7 +8,7 @@ abstract class Controller {
         $this->view = new View();
     }
 
-    protected function render($template, $data = []) {
+    public function render($template, $data = []) {
         extract($data);
         ob_start();
         require __DIR__ . '/../app/views/' . $template . '.php';
