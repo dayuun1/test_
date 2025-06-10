@@ -14,22 +14,55 @@ class Router {
         $method = $_SERVER['REQUEST_METHOD'];
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+        ob_start();
         if (isset($this->routes[$method][$path])) {
-            return $this->executeCallback($this->routes[$method][$path]);
+            $result = $this->executeCallback($this->routes[$method][$path]);
+            $content = ob_get_clean();
+
+            if (is_string($result) && strlen($result) > 0) {
+                $content = $result;
+            }
+
+            $statusCode = http_response_code();
+            header_remove('Cache-Control');
+            HttpHelper::applyCacheHeaders($statusCode);
+
+            echo $content;
+            return null;
         }
 
         if (isset($this->routes[$method])) {
             foreach ($this->routes[$method] as $route => $callback) {
                 $pattern = $this->convertToRegex($route);
                 if (preg_match($pattern, $path, $matches)) {
-                    array_shift($matches); // Видаляємо повний збіг
-                    return $this->executeCallback($callback, $matches);
+                    array_shift($matches);
+
+                    $result = $this->executeCallback($callback, $matches);
+                    $content = ob_get_clean();
+
+                    if (is_string($result) && strlen($result) > 0) {
+                        $content = $result;
+                    }
+
+                    $statusCode = http_response_code();
+                    header_remove('Cache-Control');
+                    HttpHelper::applyCacheHeaders($statusCode);
+                    echo $content;
+                    return null;
                 }
             }
         }
 
-        http_response_code(404);
-        require '../app/views/errors/404.php';
+        ob_end_clean();
+
+        $statusCode = 404;
+        http_response_code($statusCode);
+
+        header_remove('Cache-Control');
+        HttpHelper::applyCacheHeaders($statusCode);
+        $view = new View();
+        $content = $view->render('errors/404', []);
+        echo $content;
     }
 
     private function convertToRegex($route) {
@@ -46,4 +79,5 @@ class Router {
 
         return call_user_func_array($callback, $params);
     }
+
 }

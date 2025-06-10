@@ -1,5 +1,7 @@
 <?php
+
 abstract class Controller {
+
     protected $view;
 
     public function __construct() {
@@ -13,13 +15,18 @@ abstract class Controller {
         return ob_get_clean();
     }
 
-    protected function redirect($url) {
+    protected function redirect($url, $statusCode = 302) {
+        header_remove('Cache-Control');
+        http_response_code($statusCode);
+        HttpHelper::applyCacheHeaders($statusCode);
         header("Location: $url");
         exit;
     }
 
     protected function json($data, $statusCode = 200) {
         http_response_code($statusCode);
+        header_remove('Cache-Control');
+        HttpHelper::applyCacheHeaders($statusCode);
         header('Content-Type: application/json');
         echo json_encode($data);
         exit;
